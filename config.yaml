@@ -1,0 +1,82 @@
+system:
+  db_path: "data/project_details.db"
+  host: "0.0.0.0"
+  port: 5005
+  debug: true
+
+thresholds:
+  high: 80    
+  medium: 50  
+  low: 0      
+
+categories:
+  features:
+    display_name: "Features"
+    table: "project_details"
+    include: true
+    fields:
+      WBS1: { rule: "uniqueness" } # Primary Project ID
+      PlanID: { rule: "completeness" }
+      ProjectType: { rule: "in_list", list: ["Type A", "Type B"] }
+      ProjectCurrencyCode: { rule: "completeness" }
+      Responsibility: { rule: "completeness" }
+
+  plan:
+    display_name: "Plan"
+    table: "project_details"
+    include: true
+    fields:
+      StartDate: { rule: "less_than", compare_to: "EndDate" }
+      EstStartDate: { rule: "less_than", compare_to: "EstEndDate" }
+      PlanStartDate: { rule: "less_than", compare_to: "PlanEndDate" }
+
+  reporting:
+    display_name: "Reporting"
+    table: "project_details"
+    include: true
+    fields:
+      Status: { rule: "completeness" }
+      Stage: { rule: "completeness" }
+
+  revenue:
+    display_name: "Revenue"
+    table: "project_details"
+    include: true
+    fields:
+      Revenue: { rule: "min_value", val: 10000 }
+      TotalContractValue: { rule: "min_value", val: 10000 }
+      WeightedRevenue: { rule: "consistency_inactive", max_inactive: 10000 }
+
+  costs:
+    display_name: "Costs"
+    table: "project_details"
+    include: true
+    fields:
+      TotalProjectCost: { rule: "min_value", val: 10000 }
+      EstConstructionCost: { rule: "min_value", val: 10000 }
+
+  variation_orders:
+    display_name: "Variation Orders"
+    table: "project_details"
+    include: true
+    fields:
+      CustVOFlag: { rule: "completeness" }
+      CustEOTVOAwardedVO: { rule: "completeness" }
+
+  resources_internal:
+    display_name: "Resources Internal"
+    table: "project_details"
+    include: true
+    fields:
+      AjeraSpentLabor: { rule: "min_value", val: 10 }
+      AjeraCostLabor: { rule: "min_value", val: 10 }
+      AjeraWIPLabor: { rule: "min_value", val: 10 }
+
+  resources_external:
+    display_name: "Resources External"
+    table: "project_details"
+    include: true
+    fields:
+      AjeraSpentConsultant: { rule: "min_value", val: 10 }
+      AjeraCostConsultant: { rule: "min_value", val: 10 }
+      ConsultFee: { rule: "min_value", val: 10 }
